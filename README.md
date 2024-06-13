@@ -1,8 +1,8 @@
 # CQRS and Event Sourcing
 
-| Branch |                                                                                                         Pipeline                                                                                                         |                                                                                                      Code coverage                                                                                                       |                                               Test report                                                |                                 SonarCloud                                 |
-|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
-| master | [![pipeline status](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/badges/master/pipeline.svg)](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/-/commits/master) | [![coverage report](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/badges/master/coverage.svg)](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/-/commits/master) | [link](https://showmeyourcodeyoutube.gitlab.io/cqrs-and-event-sourcing-in-kotlin/test-report/index.html) | [link](https://sonarcloud.io/organizations/showmeyourcodeyoutube/projects) |
+| Branch |                                                                                                         Pipeline                                                                                                         |                                                                                                      Code coverage                                                                                                       |                                               Test report                                                |                                               Dependency report                                                |                                 SonarCloud                                 |
+|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
+| master | [![pipeline status](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/badges/master/pipeline.svg)](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/-/commits/master) | [![coverage report](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/badges/master/coverage.svg)](https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin/-/commits/master) | [link](https://showmeyourcodeyoutube.gitlab.io/cqrs-and-event-sourcing-in-kotlin/test-report/index.html) | [link](https://showmeyourcodeyoutube.gitlab.io/cqrs-and-event-sourcing-in-kotlin/dependency-check-report.html) | [link](https://sonarcloud.io/organizations/showmeyourcodeyoutube/projects) |
 
 ---
 
@@ -16,6 +16,9 @@ The example is based on stores and products.
 - Kotlin
 - Spring Boot Reactive stack
 - Kotest
+---
+Maven plugins:
+- [OWASP / Dependency-Check](https://jeremylong.github.io/DependencyCheck/dependency-check-maven/configuration.html)
 
 ## How to start?
 
@@ -66,6 +69,8 @@ A query is only created when data is to be retrieved from the data store. Simila
 Command Query Responsibility Segregation (CQRS) is a principle/popular architecture pattern that applies CQS however it is a much more complex principle since CQRS allows for separate data stores and separate models for commands and queries. The data between data stores is usually synchronized using a service bus. With CQS, the same data store is used for both commands and queries and models may be shared between commands and queries.
 
 In a nutshell it says that your write model is not the same as your read model because of different representation logic behind it: for your web pages you could have views specifically adapted for representation logic of the UI elements on it. And write model contains all data in format which best fits type of the data. If you familiar with SQL, read model is something similar to SQL Views (which is just projection of data in convenient form). This gives you not only flexibility in separation of representational logic, but also in choosing underlying storage technologies. Write model storage could be in good old SQL and read model could be in MongoDB or any other NoSQL DBMS. In essence it is SRP (single responsibility principle) at application level.
+
+*However, using the same database for your read/write models, you can choose a materialized view to present you read model, direction synchronization by updating the view table in the same transaction after updating your write model, or do it asynchronously via messaging.*
 
 **The same store**  
 ![single storage](./docs/altkom/3_separate_models_commands_queries.png)
