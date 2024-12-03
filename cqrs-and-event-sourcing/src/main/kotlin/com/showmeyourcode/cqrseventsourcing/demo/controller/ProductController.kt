@@ -7,6 +7,8 @@ import com.showmeyourcode.cqrseventsourcing.demo.domain.CommandHandlerProvider
 import com.showmeyourcode.cqrseventsourcing.demo.domain.QueryHandlerProvider
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQueryResult
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQuery
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQueryResult
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,6 +27,7 @@ class ProductController(
         const val ADD_PRODUCT_PATH = "/addProduct"
         const val CHANGE_PRODUCT_AVAILABILITY_PATH = "/changeProductAvailability"
         const val GET_PRODUCT_AVAILABILITY_PATH = "/getProductAvailability"
+        const val GET_PRODUCT_PRICE_PATH = "/getProductPrice"
         const val GET_PRODUCTS_PATH = "/getProducts"
     }
 
@@ -42,6 +45,11 @@ class ProductController(
     @PostMapping(GET_PRODUCT_AVAILABILITY_PATH)
     fun getProductAvailability(@RequestBody query: GetProductAvailabilityQuery): Mono<GetProductAvailabilityQueryResult> {
         return Mono.just(queryHandlerProvider.getProductAvailability(query))
+    }
+
+    @PostMapping(GET_PRODUCT_PRICE_PATH)
+    fun getProductPrice(@RequestBody query: GetProductPriceQuery): Mono<GetProductPriceQueryResult> {
+        return Mono.just(queryHandlerProvider.getProductPrice(query))
     }
 
     @PostMapping(GET_PRODUCTS_PATH)

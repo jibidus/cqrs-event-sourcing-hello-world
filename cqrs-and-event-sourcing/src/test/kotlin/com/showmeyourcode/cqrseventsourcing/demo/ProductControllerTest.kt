@@ -4,12 +4,15 @@ import com.showmeyourcode.cqrseventsourcing.demo.command.addproduct.AddProductCo
 import com.showmeyourcode.cqrseventsourcing.demo.command.addproduct.AddProductCommandResult
 import com.showmeyourcode.cqrseventsourcing.demo.command.changeavailability.ChangeProductAvailabilityCommand
 import com.showmeyourcode.cqrseventsourcing.demo.controller.ProductController
+import com.showmeyourcode.cqrseventsourcing.demo.domain.query.ProductPriceQuery
 import com.showmeyourcode.cqrseventsourcing.demo.domain.query.ProductQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQueryResult
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.repository.eventstore.EventStore
+import com.showmeyourcode.cqrseventsourcing.demo.repository.query.ProductPriceQueryRepository
 import com.showmeyourcode.cqrseventsourcing.demo.repository.query.ProductQueryRepository
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -36,6 +39,7 @@ class ProductControllerTest(
     @Autowired private val webClient: WebTestClient,
     @Autowired private val eventStore: EventStore,
     @Autowired private val queryRepository: ProductQueryRepository,
+    @Autowired private val queryPriceRepository: ProductPriceQueryRepository,
 ) {
 
     @AfterEach
@@ -109,6 +113,25 @@ class ProductControllerTest(
                 it.availability shouldBe product.availability
             }
     }
+
+    @Test
+    fun shouldPerformGetProductPriceQueryWhenProductIsFound() {
+        val product = ProductPriceQuery(UUID.randomUUID(), "Example Product",  10)
+        queryPriceRepository.save(product)
+
+        val getAvailability = GetProductAvailabilityQuery(product.id)
+        webClient.post()
+            .uri(ProductController.GET_PRODUCT_PRICE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(getAvailability))
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(GetProductPriceQueryResult::class.java)
+            .value {
+                it.price shouldBe product.price
+            }
+    }
+
 
     @Test
     fun shouldPerformGetProductAvailabilityQueryWhenProductIsNotFound() {

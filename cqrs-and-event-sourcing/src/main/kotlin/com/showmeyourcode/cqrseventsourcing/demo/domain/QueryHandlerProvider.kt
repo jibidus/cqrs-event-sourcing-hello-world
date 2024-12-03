@@ -3,6 +3,9 @@ package com.showmeyourcode.cqrseventsourcing.demo.domain
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityHandler
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQueryResult
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceHandler
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQuery
+import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsHandler
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQueryResult
@@ -18,5 +21,9 @@ class QueryHandlerProvider constructor(private val applicationContext: Applicati
 
     fun getProducts(query: GetProductsQuery): GetProductsQueryResult {
         return applicationContext.getBean(GetProductsHandler::class.java).handle(query)
+    }
+
+    fun getProductPrice(query: GetProductPriceQuery): GetProductPriceQueryResult {
+        return applicationContext.getBean(GetProductPriceHandler::class.java).handle(query)
     }
 }
