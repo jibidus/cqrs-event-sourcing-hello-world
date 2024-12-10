@@ -1,3 +1,5 @@
+This repository is fork of https://gitlab.com/ShowMeYourCodeYouTube/cqrs-and-event-sourcing-in-kotlin.
+
 # CQRS and Event Sourcing
 
 | Branch |                                                                                                         Pipeline                                                                                                         |                                                                                                      Code coverage                                                                                                       |                                               Test report                                                |                                               Dependency report                                                |                                 SonarCloud                                 |
