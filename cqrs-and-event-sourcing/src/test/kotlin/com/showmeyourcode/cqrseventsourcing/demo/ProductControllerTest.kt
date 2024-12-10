@@ -198,4 +198,33 @@ class ProductControllerTest(
                 it.updatesByProduct[productId] shouldBe update.count
             }
     }
+
+    @Test
+    fun xxx() {
+        val addProductCmd = AddProductCommand("ExampleProduct", 100)
+        var id: UUID? = null
+        webClient.post()
+            .uri(ProductController.ADD_PRODUCT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(addProductCmd))
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(AddProductCommandResult::class.java)
+            .value {
+                it.id.shouldNotBeNull()
+                id= it.id
+            }
+
+        val getUpdates = GetUpdatesByProductQuery()
+        webClient.post()
+            .uri(ProductController.GET_UPDATES_BY_PRODUCT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(getUpdates))
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(GetUpdatesByProductQueryResult::class.java)
+            .value {
+                it.updatesByProduct[id] shouldBe 1
+            }
+    }
 }
