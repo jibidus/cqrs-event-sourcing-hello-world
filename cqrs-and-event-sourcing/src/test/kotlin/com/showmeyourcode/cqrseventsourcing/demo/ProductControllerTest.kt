@@ -6,14 +6,18 @@ import com.showmeyourcode.cqrseventsourcing.demo.command.changeavailability.Chan
 import com.showmeyourcode.cqrseventsourcing.demo.controller.ProductController
 import com.showmeyourcode.cqrseventsourcing.demo.domain.query.ProductPriceQuery
 import com.showmeyourcode.cqrseventsourcing.demo.domain.query.ProductQuery
+import com.showmeyourcode.cqrseventsourcing.demo.domain.query.UpdateByProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductavailability.GetProductAvailabilityQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProductPriceQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQueryResult
+import com.showmeyourcode.cqrseventsourcing.demo.query.updatesbyproduct.GetUpdatesByProductQueryResult
 import com.showmeyourcode.cqrseventsourcing.demo.repository.eventstore.EventStore
 import com.showmeyourcode.cqrseventsourcing.demo.repository.query.ProductPriceQueryRepository
 import com.showmeyourcode.cqrseventsourcing.demo.repository.query.ProductQueryRepository
+import com.showmeyourcode.cqrseventsourcing.demo.repository.query.UpdatesByProductQueryRepository
+import com.showmeyourcode.cqrseventsourcing.demo.query.updatesbyproduct.GetUpdatesByProductQuery
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
@@ -40,6 +44,7 @@ class ProductControllerTest(
     @Autowired private val eventStore: EventStore,
     @Autowired private val queryRepository: ProductQueryRepository,
     @Autowired private val queryPriceRepository: ProductPriceQueryRepository,
+    @Autowired private val updatesByProductRepository: UpdatesByProductQueryRepository,
 ) {
 
     @AfterEach
@@ -173,5 +178,24 @@ class ProductControllerTest(
             .body(BodyInserters.fromValue(getProducts))
             .exchange()
             .expectStatus().isOk
+    }
+
+    @Test
+    fun ShouldGetProductsUpdates() {
+        val productId = UUID.randomUUID()
+        val update = UpdateByProductsQuery(productId, 2)
+        updatesByProductRepository.save(update)
+
+        val getUpdates = GetUpdatesByProductQuery()
+        webClient.post()
+            .uri(ProductController.GET_UPDATES_BY_PRODUCT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(getUpdates))
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(GetUpdatesByProductQueryResult::class.java)
+            .value {
+                it.updatesByProduct[productId] shouldBe update.count
+            }
     }
 }

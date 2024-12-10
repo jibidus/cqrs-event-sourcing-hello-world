@@ -9,6 +9,9 @@ import com.showmeyourcode.cqrseventsourcing.demo.query.getproductprice.GetProduc
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsHandler
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQuery
 import com.showmeyourcode.cqrseventsourcing.demo.query.getproducts.GetProductsQueryResult
+import com.showmeyourcode.cqrseventsourcing.demo.query.updatesbyproduct.GetUpdatesByProductHandler
+import com.showmeyourcode.cqrseventsourcing.demo.query.updatesbyproduct.GetUpdatesByProductQuery
+import com.showmeyourcode.cqrseventsourcing.demo.query.updatesbyproduct.GetUpdatesByProductQueryResult
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 
@@ -25,5 +28,9 @@ class QueryHandlerProvider constructor(private val applicationContext: Applicati
 
     fun getProductPrice(query: GetProductPriceQuery): GetProductPriceQueryResult {
         return applicationContext.getBean(GetProductPriceHandler::class.java).handle(query)
+    }
+
+    fun getUpdatesByProduct(query: GetUpdatesByProductQuery): GetUpdatesByProductQueryResult {
+        return applicationContext.getBean(GetUpdatesByProductHandler::class.java).handle(query)
     }
 }
