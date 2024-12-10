@@ -212,8 +212,19 @@ class ProductControllerTest(
             .expectBody(AddProductCommandResult::class.java)
             .value {
                 it.id.shouldNotBeNull()
-                id= it.id
+                id = it.id
             }
+
+        val changeAvailability = ChangeProductAvailabilityCommand(
+            id!!,
+            100,
+        )
+        webClient.post()
+            .uri(ProductController.CHANGE_PRODUCT_AVAILABILITY_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(changeAvailability))
+            .exchange()
+            .expectStatus().isOk
 
         val getUpdates = GetUpdatesByProductQuery()
         webClient.post()
@@ -224,7 +235,7 @@ class ProductControllerTest(
             .expectStatus().isOk
             .expectBody(GetUpdatesByProductQueryResult::class.java)
             .value {
-                it.updatesByProduct[id] shouldBe 1
+                it.updatesByProduct[id] shouldBe 2
             }
     }
 }

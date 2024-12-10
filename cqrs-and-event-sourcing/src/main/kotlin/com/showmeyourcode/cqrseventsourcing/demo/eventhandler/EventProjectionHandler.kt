@@ -40,6 +40,10 @@ class EventProjectionHandler(private val repository: ProductQueryRepository, pri
                         event.availability,
                     ),
                 )
+                val productsQuery = updatesByProductQueryRepository.findById(event.productID).get()
+                updatesByProductQueryRepository.save(
+                    UpdateByProductsQuery(event.productID, productsQuery.count + 1)
+                )
             }
             else -> log.warn("Event not handled! $event")
         }
